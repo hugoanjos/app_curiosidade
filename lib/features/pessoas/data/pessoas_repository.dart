@@ -8,8 +8,9 @@ class PessoasRepository {
 
   Future<ResponsePessoas> buscarPessoas(String busca, String token) async {
     try {
+      final endpoint = (busca.isEmpty) ? '/pessoa' : '/pessoa/filtrar/$busca';
       final response = await dio.get(
-        '/pessoa/$busca',
+        endpoint,
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',

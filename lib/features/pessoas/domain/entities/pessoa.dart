@@ -3,11 +3,11 @@ class Pessoa {
   final String nome;
   final int idade;
   final String email;
-  final String endereco;
-  final String outrasInformacoes;
-  final String interesses;
-  final String sentimentos;
-  final String valores;
+  final String? endereco;
+  final String? outrasInformacoes;
+  final String? interesses;
+  final String? sentimentos;
+  final String? valores;
   final DateTime dataCadastro;
   final bool ativo;
   final bool deletado;
@@ -17,11 +17,11 @@ class Pessoa {
     required this.nome,
     required this.idade,
     required this.email,
-    required this.endereco,
-    required this.outrasInformacoes,
-    required this.interesses,
-    required this.sentimentos,
-    required this.valores,
+    this.endereco,
+    this.outrasInformacoes,
+    this.interesses,
+    this.sentimentos,
+    this.valores,
     required this.dataCadastro,
     required this.ativo,
     required this.deletado,
