@@ -66,61 +66,64 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildFormWidget(BuildContext context, LoginState state) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 400),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            children: [
-              TextField(
-                controller: emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                onChanged: (_) => _onFormChanged(context),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: senhaController,
-                decoration: const InputDecoration(labelText: 'Senha'),
-                obscureText: true,
-                onChanged: (_) => _onFormChanged(context),
-                onSubmitted: state.isLoading || !state.isFormValid
-                    ? null
-                    : (_) => _fazerLogin(context),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(48),
-                  ),
-                  onPressed: state.isLoading || !state.isFormValid
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 400),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              children: [
+                TextField(
+                  controller: emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  onChanged: (_) => _onFormChanged(context),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: senhaController,
+                  decoration: const InputDecoration(labelText: 'Senha'),
+                  obscureText: true,
+                  onChanged: (_) => _onFormChanged(context),
+                  onSubmitted: state.isLoading || !state.isFormValid
                       ? null
-                      : () => _fazerLogin(context),
-                  child: state.isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('Entrar'),
+                      : (_) => _fazerLogin(context),
                 ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    minimumSize: const Size.fromHeight(48),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                    ),
+                    onPressed: state.isLoading || !state.isFormValid
+                        ? null
+                        : () => _fazerLogin(context),
+                    child: state.isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text('Entrar'),
                   ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const CadastroPage()),
-                    );
-                  },
-                  child: const Text('Registrar'),
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const CadastroPage()),
+                      );
+                    },
+                    child: const Text('Registrar'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
