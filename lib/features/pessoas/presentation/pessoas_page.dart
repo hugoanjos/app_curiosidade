@@ -129,7 +129,7 @@ class _PessoasPageState extends State<PessoasPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            final bloc = BlocProvider.of<PessoasBloc>(context, listen: false);
+            final bloc = _pessoasBloc;
             final result = await Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => BlocProvider.value(

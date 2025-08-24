@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_curiosidade/features/pessoas/domain/entities/pessoa.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_curiosidade/features/pessoas/presentation/bloc/pessoas_bloc.dart';
 import 'package:app_curiosidade/features/pessoas/presentation/bloc/pessoas_event.dart';
@@ -94,7 +95,11 @@ class _PessoaFormPageState extends State<PessoaFormPage> {
     return BlocListener<PessoasBloc, PessoasState>(
       listener: (context, state) {
         if (state.success == true) {
-          Navigator.of(context).pop(true);
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop(true);
+            }
+          });
         } else if (state.error != null && state.error!.isNotEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.error!), backgroundColor: Colors.red),
