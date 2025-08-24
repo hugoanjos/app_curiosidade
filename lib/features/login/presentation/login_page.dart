@@ -126,8 +126,13 @@ class _LoginPageState extends State<LoginPage> {
           if (state.error != null) {
             errorSnackBar(state.error!, context);
           }
-          if (state.isSuccess && state.token != null) {
-            context.read<AuthCubit>().setToken(state.token!);
+          if (state.isSuccess &&
+              state.token != null &&
+              state.id != null &&
+              state.nome != null) {
+            context
+                .read<AuthCubit>()
+                .setAuth(token: state.token!, id: state.id!, nome: state.nome!);
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const HomePage()),
             );

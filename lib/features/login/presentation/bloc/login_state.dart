@@ -6,6 +6,8 @@ class LoginState extends Equatable {
   final String? error;
   final bool isSuccess;
   final String? token;
+  final int? id;
+  final String? nome;
 
   const LoginState({
     this.isFormValid = false,
@@ -13,6 +15,8 @@ class LoginState extends Equatable {
     this.error,
     this.isSuccess = false,
     this.token,
+    this.id,
+    this.nome,
   });
 
   LoginState copyWith({
@@ -21,6 +25,8 @@ class LoginState extends Equatable {
     String? error,
     bool? isSuccess,
     String? token,
+    int? id,
+    String? nome,
   }) {
     return LoginState(
       isFormValid: isFormValid ?? this.isFormValid,
@@ -28,9 +34,12 @@ class LoginState extends Equatable {
       error: error,
       isSuccess: isSuccess ?? this.isSuccess,
       token: token ?? this.token,
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
     );
   }
 
   @override
-  List<Object?> get props => [isFormValid, isLoading, error, isSuccess, token];
+  List<Object?> get props =>
+      [isFormValid, isLoading, error, isSuccess, token, id, nome];
 }

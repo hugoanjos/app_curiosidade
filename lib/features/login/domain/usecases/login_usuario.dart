@@ -4,7 +4,7 @@ class LoginUsuarioUsecase {
   final LoginRepository repository;
   LoginUsuarioUsecase(this.repository);
 
-  Future<String?> execute(String email, String senha) async {
+  Future<Map<String, dynamic>?> execute(String email, String senha) async {
     return await repository.loginUsuario(email, senha);
   }
 }

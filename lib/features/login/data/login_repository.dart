@@ -25,7 +25,7 @@ class LoginRepository {
     }
   }
 
-  Future<String?> loginUsuario(String email, String senha) async {
+  Future<Map<String, dynamic>?> loginUsuario(String email, String senha) async {
     try {
       final response = await dio.post(
         '/usuario/login',
@@ -35,7 +35,11 @@ class LoginRepository {
         },
       );
       if (response.statusCode == 200) {
-        return response.data['token'];
+        return {
+          'token': response.data['token'],
+          'id': response.data['id'],
+          'nome': response.data['nome'],
+        };
       } else {
         throw Exception(response.data['error'] ?? 'Erro desconhecido');
       }
