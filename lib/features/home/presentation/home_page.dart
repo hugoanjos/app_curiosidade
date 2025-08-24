@@ -28,7 +28,7 @@ class HomePage extends StatelessWidget {
               BottomNavigationBarItem(
                   icon: Icon(Icons.dashboard), label: 'Dashboard'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.people), label: 'Pessoas'),
+                  icon: Icon(Icons.people), label: 'Cadastros'),
               BottomNavigationBarItem(
                   icon: Icon(Icons.person), label: 'Usuário'),
             ],

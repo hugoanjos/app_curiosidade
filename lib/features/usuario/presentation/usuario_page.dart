@@ -13,7 +13,7 @@ class UsuarioPage extends StatelessWidget {
   const UsuarioPage({super.key});
 
   void _logout(BuildContext context) {
-    context.read<AuthCubit>().clearAuth();
+    sl<AuthCubit>().clearAuth();
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const LoginPage()),
       (route) => false,
@@ -23,7 +23,6 @@ class UsuarioPage extends StatelessWidget {
   void _showAlterarSenhaDialog(BuildContext context, int id) {
     final novaSenhaController = TextEditingController();
     final confirmarSenhaController = TextEditingController();
-    final token = context.read<AuthCubit>().state.token;
     showDialog(
       context: context,
       builder: (dialogContext) {
@@ -35,6 +34,16 @@ class UsuarioPage extends StatelessWidget {
                 Navigator.of(dialogContext).pop();
                 successSnackBar('Senha alterada com sucesso!', context);
               } else if (state.error != null) {
+                if (state.error == 'Exception: unauthorized') {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    sl<AuthCubit>().clearAuth();
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => const LoginPage()),
+                      (route) => false,
+                    );
+                  });
+                  return;
+                }
                 errorSnackBar(state.error!, context);
               }
             },
@@ -86,8 +95,9 @@ class UsuarioPage extends StatelessWidget {
                               );
                               return;
                             }
-                            context.read<UsuarioCubit>().alterarSenha(
-                                id: id, novaSenha: novaSenha, token: token!);
+                            context
+                                .read<UsuarioCubit>()
+                                .alterarSenha(id: id, novaSenha: novaSenha);
                           },
                     child: state.isLoading
                         ? const SizedBox(
@@ -107,55 +117,51 @@ class UsuarioPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthCubit, AuthState>(
-      builder: (context, authState) {
-        final nome = authState.nome ?? 'Usuário';
-        final id = authState.id;
-        return BlocProvider(
-          create: (_) =>
-              UsuarioCubit(AlterarSenhaUsecase(sl<UsuarioRepository>())),
-          child: Builder(
-            builder: (blocContext) => Scaffold(
-              appBar: AppBar(title: const Text('Usuário')),
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const CircleAvatar(
-                      radius: 48,
-                      child: Icon(Icons.person, size: 48),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      nome,
-                      style: const TextStyle(
-                          fontSize: 22, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 32),
-                    SizedBox(
-                      width: 200,
-                      child: ElevatedButton(
-                        onPressed: id == null
-                            ? null
-                            : () => _showAlterarSenhaDialog(blocContext, id),
-                        child: const Text('Alterar Senha'),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: 200,
-                      child: OutlinedButton(
-                        onPressed: () => _logout(context),
-                        child: const Text('Sair'),
-                      ),
-                    ),
-                  ],
+    final authState = sl<AuthCubit>().state;
+    final nome = authState.nome ?? 'Usuário';
+    final id = authState.id;
+    return BlocProvider(
+      create: (_) => UsuarioCubit(AlterarSenhaUsecase(sl<UsuarioRepository>())),
+      child: Builder(
+        builder: (blocContext) => Scaffold(
+          appBar: AppBar(title: const Text('Usuário')),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircleAvatar(
+                  radius: 48,
+                  child: Icon(Icons.person, size: 48),
                 ),
-              ),
+                const SizedBox(height: 16),
+                Text(
+                  nome,
+                  style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 32),
+                SizedBox(
+                  width: 200,
+                  child: ElevatedButton(
+                    onPressed: id == null
+                        ? null
+                        : () => _showAlterarSenhaDialog(blocContext, id),
+                    child: const Text('Alterar Senha'),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: 200,
+                  child: OutlinedButton(
+                    onPressed: () => _logout(context),
+                    child: const Text('Sair'),
+                  ),
+                ),
+              ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:app_curiosidade/core/auth/auth_cubit.dart';
+import 'package:app_curiosidade/core/di.dart';
 import 'package:app_curiosidade/features/login/presentation/bloc/login_bloc.dart';
 import 'package:app_curiosidade/features/login/presentation/bloc/login_event.dart';
 import 'package:app_curiosidade/features/login/presentation/bloc/login_state.dart';
@@ -130,8 +131,7 @@ class _LoginPageState extends State<LoginPage> {
               state.token != null &&
               state.id != null &&
               state.nome != null) {
-            context
-                .read<AuthCubit>()
+            sl<AuthCubit>()
                 .setAuth(token: state.token!, id: state.id!, nome: state.nome!);
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const HomePage()),

@@ -8,65 +8,56 @@ import 'bloc/dashboard_state.dart';
 import 'package:app_curiosidade/core/di.dart';
 import 'package:app_curiosidade/core/auth/auth_cubit.dart';
 
-class DashboardPage extends StatefulWidget {
+class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
-  @override
-  State<DashboardPage> createState() => _DashboardPageState();
-}
-
-class _DashboardPageState extends State<DashboardPage> {
-  late DashboardBloc _dashboardBloc;
-
-  @override
-  void initState() {
-    super.initState();
-    final token = context.read<AuthCubit>().state.token ?? '';
-    final dashboardRepository = sl<DashboardRepository>();
-    _dashboardBloc = DashboardBloc(
-      GetDashboardUsecase(dashboardRepository),
-    );
-    _dashboardBloc.add(LoadDashboard(token));
-  }
-
-  @override
-  void dispose() {
-    _dashboardBloc.close();
-    super.dispose();
-  }
-
-  Future<void> _onRefresh() async {
-    final token = context.read<AuthCubit>().state.token ?? '';
-    _dashboardBloc.add(RefreshDashboard(token));
+  Future<void> _onRefresh(BuildContext context) async {
+    context.read<DashboardBloc>().add(RefreshDashboard());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: _dashboardBloc,
-      child: BlocBuilder<DashboardBloc, DashboardState>(
-        builder: (context, state) {
-          if (state.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state.error != null) {
-            if (state.error == 'Exception: unauthorized') {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacementNamed('/login');
-              });
-              return const SizedBox.shrink();
-            }
-            return Center(child: Text(state.error!));
-          }
-          return RefreshIndicator(
-            onRefresh: _onRefresh,
-            child: ListView(
+    return BlocProvider(
+      create: (_) =>
+          DashboardBloc(GetDashboardUsecase(sl<DashboardRepository>())),
+      child: Builder(
+        builder: (context) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.read<DashboardBloc>().add(LoadDashboard());
+          });
+          return Scaffold(
+            appBar: AppBar(title: const Text('Dashboard')),
+            body: Padding(
               padding: const EdgeInsets.all(16.0),
-              children: [
-                _buildCard('Total Cadastros', state.totalCadastros),
-                _buildCard('Cadastros Último Mês', state.cadastrosUltimoMes),
-                _buildCard('Cadastros Pendentes', state.cadastrosPendentes),
-              ],
+              child: BlocBuilder<DashboardBloc, DashboardState>(
+                builder: (context, state) {
+                  if (state.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (state.error != null) {
+                    if (state.error == 'Exception: unauthorized') {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        sl<AuthCubit>().clearAuth();
+                        Navigator.of(context).pushReplacementNamed('/login');
+                      });
+                      return const SizedBox.shrink();
+                    }
+                    return Center(child: Text(state.error!));
+                  }
+                  return RefreshIndicator(
+                    onRefresh: () => _onRefresh(context),
+                    child: ListView(
+                      children: [
+                        _buildCard('Total Cadastros', state.totalCadastros),
+                        _buildCard(
+                            'Cadastros Último Mês', state.cadastrosUltimoMes),
+                        _buildCard(
+                            'Cadastros Pendentes', state.cadastrosPendentes),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           );
         },
