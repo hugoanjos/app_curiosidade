@@ -1,19 +1,15 @@
-import 'package:app_curiosidade/features/login/domain/usecases/cadastrar_usuario.dart';
+import 'package:app_curiosidade/features/login/domain/usecases/cadastrar_usuario_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cadastro_event.dart';
 import 'cadastro_state.dart';
-import '../../../data/login_repository.dart';
 import '../../../domain/entities/usuario.dart';
-import 'package:get_it/get_it.dart';
-
-final sl = GetIt.instance;
+import 'package:app_curiosidade/core/di.dart';
 
 class CadastroBloc extends Bloc<CadastroEvent, CadastroState> {
   final CadastrarUsuarioUsecase cadastrarUsuarioUsecase;
 
   CadastroBloc({CadastrarUsuarioUsecase? usecase})
-      : cadastrarUsuarioUsecase =
-            usecase ?? CadastrarUsuarioUsecase(sl<LoginRepository>()),
+      : cadastrarUsuarioUsecase = usecase ?? sl<CadastrarUsuarioUsecase>(),
         super(const CadastroState()) {
     on<CadastroFormChanged>((event, emit) {
       final isValid = event.nome.isNotEmpty &&

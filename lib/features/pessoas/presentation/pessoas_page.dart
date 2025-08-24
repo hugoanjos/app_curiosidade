@@ -1,15 +1,18 @@
 import 'dart:async';
 
-import 'package:app_curiosidade/features/login/presentation/bloc/cadastro/cadastro_bloc.dart';
-import 'package:app_curiosidade/features/pessoas/data/pessoas_repository.dart';
 import 'package:app_curiosidade/features/pessoas/domain/usecases/buscar_pessoas_usecase.dart';
 import 'package:app_curiosidade/features/pessoas/presentation/bloc/pessoas_bloc.dart';
 import 'package:app_curiosidade/features/pessoas/presentation/bloc/pessoas_event.dart';
 import 'package:app_curiosidade/features/pessoas/presentation/bloc/pessoas_state.dart';
 import 'package:app_curiosidade/shared/components/snackbar.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:app_curiosidade/shared/components/card_pessoa.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_curiosidade/features/pessoas/presentation/pessoa_form_page.dart';
+import 'package:app_curiosidade/features/pessoas/domain/usecases/criar_pessoa_usecase.dart';
+import 'package:app_curiosidade/features/pessoas/domain/usecases/atualizar_pessoa_usecase.dart';
+import 'package:app_curiosidade/core/di.dart';
 
 class PessoasPage extends StatefulWidget {
   final String? initialSearch;
@@ -27,7 +30,11 @@ class _PessoasPageState extends State<PessoasPage> {
   @override
   void initState() {
     super.initState();
-    _pessoasBloc = PessoasBloc(BuscarPessoasUsecase(sl<PessoasRepository>()));
+    _pessoasBloc = PessoasBloc(
+      buscarPessoasUsecase: sl<BuscarPessoasUsecase>(),
+      criarPessoaUsecase: sl<CriarPessoaUsecase>(),
+      atualizarPessoaUsecase: sl<AtualizarPessoaUsecase>(),
+    );
     _searchController.addListener(() => _onSearchChanged());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.initialSearch != null && widget.initialSearch!.isNotEmpty) {
@@ -100,6 +107,17 @@ class _PessoasPageState extends State<PessoasPage> {
                         return CardPessoa(
                           pessoa: pessoa,
                           showActions: true,
+                          onEditSuccess: () {
+                            if (mounted) {
+                              SchedulerBinding.instance
+                                  .addPostFrameCallback((_) {
+                                successSnackBar(
+                                    'Cadastro atualizado com sucesso!',
+                                    context);
+                                _pessoasBloc.add(const BuscarPessoasEvent(''));
+                              });
+                            }
+                          },
                         );
                       },
                     );
@@ -108,6 +126,27 @@ class _PessoasPageState extends State<PessoasPage> {
               ),
             ],
           ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            final bloc = BlocProvider.of<PessoasBloc>(context, listen: false);
+            final result = await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => BlocProvider.value(
+                  value: bloc,
+                  child: const PessoaFormPage(),
+                ),
+              ),
+            );
+            if (result == true) {
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                successSnackBar('Cadastro realizado com sucesso!', context);
+                _pessoasBloc.add(const BuscarPessoasEvent(''));
+              });
+            }
+          },
+          tooltip: 'Novo Cadastro',
+          child: const Icon(Icons.add),
         ),
       ),
     );

@@ -6,7 +6,6 @@ import 'package:app_curiosidade/features/login/presentation/login_page.dart';
 import 'package:app_curiosidade/features/usuario/presentation/bloc/usuario_cubit.dart';
 import 'package:app_curiosidade/features/usuario/presentation/bloc/usuario_state.dart';
 import 'package:app_curiosidade/features/usuario/domain/usecases/alterar_senha_usecase.dart';
-import 'package:app_curiosidade/features/usuario/data/usuario_repository.dart';
 import 'package:app_curiosidade/core/di.dart';
 
 class UsuarioPage extends StatelessWidget {
@@ -121,7 +120,7 @@ class UsuarioPage extends StatelessWidget {
     final nome = authState.nome ?? 'Usuário';
     final id = authState.id;
     return BlocProvider(
-      create: (_) => UsuarioCubit(AlterarSenhaUsecase(sl<UsuarioRepository>())),
+      create: (_) => UsuarioCubit(sl<AlterarSenhaUsecase>()),
       child: Builder(
         builder: (blocContext) => Scaffold(
           appBar: AppBar(title: const Text('Usuário')),

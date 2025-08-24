@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:app_curiosidade/features/pessoas/domain/entities/pessoa.dart';
+import 'package:app_curiosidade/features/pessoas/presentation/pessoa_form_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_curiosidade/features/pessoas/presentation/bloc/pessoas_bloc.dart';
 
 class CardPessoa extends StatelessWidget {
   final Pessoa pessoa;
   final bool showActions;
   final VoidCallback? onTap;
+  final VoidCallback? onEditSuccess;
 
   const CardPessoa({
     super.key,
     required this.pessoa,
     this.showActions = true,
     this.onTap,
+    this.onEditSuccess,
   });
 
   Widget _infoRow(String label, String value, {bool multiline = false}) {
@@ -70,12 +75,6 @@ class CardPessoa extends StatelessWidget {
               ],
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Fechar'),
-            ),
-          ],
         );
       },
     );
@@ -93,55 +92,58 @@ class CardPessoa extends StatelessWidget {
       pessoa.valores,
     ].any((field) => field == null || field.isEmpty);
 
-    return InkWell(
-      onTap: onTap,
-      child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        child: ListTile(
-          leading: CircleAvatar(
-            child: Text(pessoa.nome.isNotEmpty ? pessoa.nome[0] : '?'),
-          ),
-          title: Text(pessoa.nome),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(pessoa.email),
-              if (isCadastroPendente)
-                const Text(
-                  'Cadastro pendente',
-                  style: TextStyle(
-                      color: Colors.orange, fontWeight: FontWeight.bold),
-                ),
-            ],
-          ),
-          trailing: showActions
-              ? Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      pessoa.ativo ? Icons.check_circle : Icons.cancel,
-                      color: pessoa.ativo ? Colors.green : Colors.red,
-                    ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      icon: const Icon(Icons.info_outline),
-                      onPressed: () {
-                        dialogMostrarInformacoes(context);
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        // TODO: Edit pessoa
-                      },
-                    ),
-                  ],
-                )
-              : Icon(
-                  pessoa.ativo ? Icons.check_circle : Icons.cancel,
-                  color: pessoa.ativo ? Colors.green : Colors.red,
-                ),
+    return Card(
+      child: ListTile(
+        title: Text(pessoa.nome),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(pessoa.email),
+            if (isCadastroPendente)
+              const Text(
+                'Cadastro pendente',
+                style: TextStyle(
+                    color: Colors.orange, fontWeight: FontWeight.bold),
+              ),
+          ],
         ),
+        trailing: showActions
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    pessoa.ativo ? Icons.check_circle : Icons.cancel,
+                    color: pessoa.ativo ? Colors.green : Colors.red,
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.info_outline),
+                    onPressed: () {
+                      dialogMostrarInformacoes(context);
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () async {
+                      final bloc =
+                          BlocProvider.of<PessoasBloc>(context, listen: false);
+                      final result = await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider.value(
+                            value: bloc,
+                            child: PessoaFormPage(pessoa: pessoa),
+                          ),
+                        ),
+                      );
+                      if (result == true && onEditSuccess != null) {
+                        onEditSuccess!();
+                      }
+                    },
+                  ),
+                ],
+              )
+            : null,
+        onTap: onTap,
       ),
     );
   }

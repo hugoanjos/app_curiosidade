@@ -1,4 +1,3 @@
-import 'package:app_curiosidade/features/dashboard/data/dashboard_repository.dart';
 import 'package:app_curiosidade/features/dashboard/domain/usecases/get_dashboard_usecase.dart';
 import 'package:app_curiosidade/features/dashboard/domain/usecases/get_recentes_usecase.dart';
 import 'package:flutter/material.dart';
@@ -23,9 +22,8 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => DashboardBloc(
-          GetDashboardUsecase(sl<DashboardRepository>()),
-          GetRecentesUsecase(sl<DashboardRepository>())),
+      create: (_) =>
+          DashboardBloc(sl<GetDashboardUsecase>(), sl<GetRecentesUsecase>()),
       child: Builder(
         builder: (context) {
           WidgetsBinding.instance.addPostFrameCallback((_) {

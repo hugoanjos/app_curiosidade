@@ -3,6 +3,44 @@ import '../domain/entities/pessoa.dart';
 import '../domain/entities/response_pessoas.dart';
 
 class PessoasRepository {
+  Future<void> criarCadastro(Pessoa pessoa, String token) async {
+    final body = {
+      'Nome': pessoa.nome,
+      'Idade': pessoa.idade,
+      'Email': pessoa.email,
+      'Endereco': pessoa.endereco,
+      'OutrasInformacoes': pessoa.outrasInformacoes,
+      'Interesses': pessoa.interesses,
+      'Sentimentos': pessoa.sentimentos,
+      'Valores': pessoa.valores,
+      'Ativo': pessoa.ativo,
+    };
+    await dio.post(
+      '/pessoa',
+      data: body,
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
+  }
+
+  Future<void> editarCadastro(Pessoa pessoa, String token) async {
+    final body = {
+      'Nome': pessoa.nome,
+      'Idade': pessoa.idade,
+      'Email': pessoa.email,
+      'Endereco': pessoa.endereco,
+      'OutrasInformacoes': pessoa.outrasInformacoes,
+      'Interesses': pessoa.interesses,
+      'Sentimentos': pessoa.sentimentos,
+      'Valores': pessoa.valores,
+      'Ativo': pessoa.ativo,
+    };
+    await dio.put(
+      '/pessoa/${pessoa.id}',
+      data: body,
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
+  }
+
   final Dio dio;
   PessoasRepository(this.dio);
 

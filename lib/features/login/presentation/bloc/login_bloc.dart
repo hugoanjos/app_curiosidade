@@ -1,6 +1,5 @@
 import 'package:app_curiosidade/core/di.dart';
-import 'package:app_curiosidade/features/login/data/login_repository.dart';
-import 'package:app_curiosidade/features/login/domain/usecases/login_usuario.dart';
+import 'package:app_curiosidade/features/login/domain/usecases/login_usuario_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'login_event.dart';
 import 'login_state.dart';
@@ -9,8 +8,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LoginUsuarioUsecase loginUsuarioUsecase;
 
   LoginBloc({LoginUsuarioUsecase? usecase})
-      : loginUsuarioUsecase =
-            usecase ?? LoginUsuarioUsecase(sl<LoginRepository>()),
+      : loginUsuarioUsecase = usecase ?? sl<LoginUsuarioUsecase>(),
         super(const LoginState()) {
     on<LoginFormChanged>((event, emit) {
       final isValid = event.email.isNotEmpty && event.senha.isNotEmpty;
