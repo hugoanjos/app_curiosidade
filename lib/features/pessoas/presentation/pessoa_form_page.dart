@@ -125,48 +125,56 @@ class _PessoaFormPageState extends State<PessoaFormPage> {
               children: [
                 TextFormField(
                   controller: nomeController,
-                  decoration: const InputDecoration(labelText: 'Nome'),
+                  decoration: const InputDecoration(labelText: 'Nome *'),
                   validator: (v) =>
                       v == null || v.isEmpty ? 'Nome obrigatório' : null,
                 ),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: idadeController,
-                  decoration: const InputDecoration(labelText: 'Idade'),
+                  decoration: const InputDecoration(labelText: 'Idade *'),
                   keyboardType: TextInputType.number,
                   validator: (v) =>
                       v == null || v.isEmpty ? 'Idade obrigatória' : null,
                 ),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
+                  decoration: const InputDecoration(labelText: 'Email *'),
                   validator: (v) =>
                       v == null || v.isEmpty ? 'Email obrigatório' : null,
                 ),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: enderecoController,
                   decoration: const InputDecoration(labelText: 'Endereço'),
                 ),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: outrasInfoController,
                   decoration:
                       const InputDecoration(labelText: 'Outras Informações'),
-                  maxLines: 2,
+                  maxLines: 3,
                 ),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: interessesController,
                   decoration: const InputDecoration(labelText: 'Interesses'),
-                  maxLines: 2,
+                  maxLines: 3,
                 ),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: sentimentosController,
                   decoration: const InputDecoration(labelText: 'Sentimentos'),
-                  maxLines: 2,
+                  maxLines: 3,
                 ),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: valoresController,
                   decoration: const InputDecoration(labelText: 'Valores'),
-                  maxLines: 2,
+                  maxLines: 3,
                 ),
+                const SizedBox(height: 16),
                 DropdownButtonFormField<bool>(
                   initialValue: ativo,
                   decoration: const InputDecoration(labelText: 'Status'),
@@ -176,12 +184,25 @@ class _PessoaFormPageState extends State<PessoaFormPage> {
                   ],
                   onChanged: (v) => setState(() => ativo = v ?? true),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        minimumSize: const Size(100, 48),
+                        textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Cancelar'),
+                    ),
                     BlocBuilder<PessoasBloc, PessoasState>(
                       builder: (context, state) => ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(120, 48),
+                          textStyle:
+                              const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         onPressed: state.isLoading ? null : _save,
                         child: state.isLoading
                             ? const SizedBox(
@@ -192,10 +213,6 @@ class _PessoaFormPageState extends State<PessoaFormPage> {
                               )
                             : const Text('Salvar'),
                       ),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancelar'),
                     ),
                   ],
                 ),
