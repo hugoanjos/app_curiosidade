@@ -1,8 +1,8 @@
 import 'package:app_curiosidade/core/auth/auth_cubit.dart';
 import 'package:app_curiosidade/core/di.dart';
-import 'package:app_curiosidade/features/login/presentation/bloc/login_bloc.dart';
-import 'package:app_curiosidade/features/login/presentation/bloc/login_event.dart';
-import 'package:app_curiosidade/features/login/presentation/bloc/login_state.dart';
+import 'package:app_curiosidade/features/login/presentation/bloc/login/login_event.dart';
+import 'package:app_curiosidade/features/login/presentation/bloc/login/login_state.dart';
+import 'package:app_curiosidade/features/login/presentation/bloc/login/login_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cadastro_page.dart';
