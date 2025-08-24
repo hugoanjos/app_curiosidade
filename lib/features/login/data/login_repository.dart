@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:app_curiosidade/core/di.dart';
 import '../domain/entities/usuario.dart';
 
 class LoginRepository {
-  final Dio dio = sl<Dio>();
+  final Dio dio;
+  LoginRepository(this.dio);
 
   Future<String?> cadastrarUsuario(Usuario usuario) async {
     try {
