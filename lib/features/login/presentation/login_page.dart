@@ -94,6 +94,9 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(48),
+                  ),
                   onPressed: state.isLoading || !state.isFormValid
                       ? null
                       : () => _fazerLogin(context),
@@ -103,13 +106,19 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 12),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const CadastroPage()),
-                  );
-                },
-                child: const Text('Registrar'),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size.fromHeight(48),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const CadastroPage()),
+                    );
+                  },
+                  child: const Text('Registrar'),
+                ),
               ),
             ],
           ),
