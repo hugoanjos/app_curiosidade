@@ -16,12 +16,15 @@ class LoginRepository {
         },
       );
       if (response.statusCode == 201) {
-        return null; // Success
+        return null;
       } else {
         return response.data['error'] ?? 'Erro desconhecido';
       }
+    } on DioException catch (e) {
+      final errorMsg = e.response?.data['error'] ?? 'Erro desconhecido';
+      return errorMsg;
     } catch (e) {
-      return 'Erro ao cadastrar usuário';
+      return 'Erro de conexão';
     }
   }
 

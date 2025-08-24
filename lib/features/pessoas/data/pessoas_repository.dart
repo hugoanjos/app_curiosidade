@@ -15,11 +15,17 @@ class PessoasRepository {
       'Valores': pessoa.valores,
       'Ativo': pessoa.ativo,
     };
-    await dio.post(
-      '/pessoa',
-      data: body,
-      options: Options(headers: {'Authorization': 'Bearer $token'}),
-    );
+    try {
+      await dio.post(
+        '/pessoa',
+        data: body,
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['error'] ?? 'Erro desconhecido');
+    } catch (e) {
+      throw Exception('Erro ao criar cadastro');
+    }
   }
 
   Future<void> editarCadastro(Pessoa pessoa, String token) async {
@@ -34,11 +40,17 @@ class PessoasRepository {
       'Valores': pessoa.valores,
       'Ativo': pessoa.ativo,
     };
-    await dio.put(
-      '/pessoa/${pessoa.id}',
-      data: body,
-      options: Options(headers: {'Authorization': 'Bearer $token'}),
-    );
+    try {
+      await dio.put(
+        '/pessoa/${pessoa.id}',
+        data: body,
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['error'] ?? 'Erro desconhecido');
+    } catch (e) {
+      throw Exception('Erro ao editar cadastro');
+    }
   }
 
   final Dio dio;
@@ -70,6 +82,12 @@ class PessoasRepository {
           message: response.data['error']?.toString() ?? 'Erro desconhecido',
         );
       }
+    } on DioException catch (e) {
+      return ResponsePessoas(
+        pessoas: [],
+        statusCode: e.response?.statusCode ?? -1,
+        message: e.response?.data['error']?.toString() ?? 'Erro desconhecido',
+      );
     } catch (e) {
       return ResponsePessoas(
         pessoas: [],

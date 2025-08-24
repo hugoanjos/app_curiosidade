@@ -25,6 +25,8 @@ class UsuarioRepository {
       } else {
         return response.data['error'] ?? 'Erro desconhecido';
       }
+    } on DioException catch (e) {
+      return e.response?.data['error'] ?? 'Erro desconhecido';
     } catch (e) {
       return 'Erro ao alterar senha';
     }
