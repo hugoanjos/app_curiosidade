@@ -13,6 +13,74 @@ class CardPessoa extends StatelessWidget {
     this.onTap,
   });
 
+  Widget _infoRow(String label, String value, {bool multiline = false}) {
+    if (multiline) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('$label:',
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(value),
+          ],
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('$label: ', style: const TextStyle(fontWeight: FontWeight.bold)),
+          Expanded(child: Text(value)),
+        ],
+      ),
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+  }
+
+  Future<dynamic> dialogMostrarInformacoes(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Informações do Cadastro'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _infoRow('Nome', pessoa.nome),
+                _infoRow('Idade', pessoa.idade.toString()),
+                _infoRow('Email', pessoa.email),
+                _infoRow('Endereço', pessoa.endereco ?? ''),
+                _infoRow('Outras Informações', pessoa.outrasInformacoes ?? '',
+                    multiline: (pessoa.outrasInformacoes ?? '').isNotEmpty),
+                _infoRow('Interesses', pessoa.interesses ?? '',
+                    multiline: (pessoa.interesses ?? '').isNotEmpty),
+                _infoRow('Sentimentos', pessoa.sentimentos ?? '',
+                    multiline: (pessoa.sentimentos ?? '').isNotEmpty),
+                _infoRow('Valores', pessoa.valores ?? '',
+                    multiline: (pessoa.valores ?? '').isNotEmpty),
+                _infoRow('Status', pessoa.ativo ? 'Ativo' : 'Desativado'),
+                _infoRow('Data de Cadastro', _formatDate(pessoa.dataCadastro)),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isCadastroPendente = [
@@ -58,7 +126,7 @@ class CardPessoa extends StatelessWidget {
                     IconButton(
                       icon: const Icon(Icons.info_outline),
                       onPressed: () {
-                        // TODO: View all info
+                        dialogMostrarInformacoes(context);
                       },
                     ),
                     IconButton(
