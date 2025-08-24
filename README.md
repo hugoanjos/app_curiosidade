@@ -49,4 +49,3 @@ Informações do Cadastro:
 
 Gerenciar Usuário:
 ![Gerenciar Usuário](screenshots/5.jpeg)
-
