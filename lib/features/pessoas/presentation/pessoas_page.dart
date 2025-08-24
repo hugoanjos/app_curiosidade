@@ -6,6 +6,7 @@ import 'package:app_curiosidade/features/pessoas/domain/usecases/buscar_pessoas_
 import 'package:app_curiosidade/features/pessoas/presentation/bloc/pessoas_bloc.dart';
 import 'package:app_curiosidade/features/pessoas/presentation/bloc/pessoas_event.dart';
 import 'package:app_curiosidade/features/pessoas/presentation/bloc/pessoas_state.dart';
+import 'package:app_curiosidade/shared/components/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -50,37 +51,49 @@ class _PessoasPageState extends State<PessoasPage> {
             appBar: AppBar(title: const Text('Cadastros')),
             body: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: _searchController,
-                    decoration: const InputDecoration(
-                      labelText: 'Buscar',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: BlocBuilder<PessoasBloc, PessoasState>(
-                      builder: (context, state) {
-                        if (state.isLoading) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-                        if (state.pessoas.isEmpty) {
-                          return const Center(
-                              child: Text('Nenhuma pessoa cadastrada.'));
-                        }
-                        return ListView.builder(
-                          itemCount: state.pessoas.length,
+              child: BlocConsumer<PessoasBloc, PessoasState>(
+                listener: (context, state) {
+                  if (state.error != null && state.error!.isNotEmpty) {
+                    errorSnackBar(state.error!, context);
+                  }
+                  if (state.response != null &&
+                      state.response!.statusCode == 401) {
+                    // Unauthorized: trigger logout/navigation
+                    Navigator.of(context).pushReplacementNamed('/login');
+                  }
+                },
+                builder: (context, state) {
+                  if (state.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final pessoas = state.response?.pessoas ?? [];
+                  if (pessoas.isEmpty) {
+                    return const Center(
+                        child: Text('Nenhuma pessoa cadastrada.'));
+                  }
+                  return Column(
+                    children: [
+                      TextField(
+                        controller: _searchController,
+                        decoration: const InputDecoration(
+                          labelText: 'Buscar',
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: pessoas.length,
                           itemBuilder: (context, index) {
-                            final pessoa = state.pessoas[index];
+                            final pessoa = pessoas[index];
                             return Card(
                               margin: const EdgeInsets.symmetric(vertical: 8),
                               child: ListTile(
                                 leading: CircleAvatar(
-                                  child: Text(pessoa.nome[0]),
+                                  child: Text(pessoa.nome.isNotEmpty
+                                      ? pessoa.nome[0]
+                                      : '?'),
                                 ),
                                 title: Text(pessoa.nome),
                                 subtitle: Text(pessoa.email),
@@ -113,11 +126,11 @@ class _PessoasPageState extends State<PessoasPage> {
                               ),
                             );
                           },
-                        );
-                      },
-                    ),
-                  ),
-                ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           );

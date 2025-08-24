@@ -1,29 +1,29 @@
-import '../../domain/entities/pessoa.dart';
+import '../../domain/entities/response_pessoas.dart';
 import 'package:equatable/equatable.dart';
 
 class PessoasState extends Equatable {
   final bool isLoading;
   final String? error;
-  final List<Pessoa> pessoas;
+  final ResponsePessoas? response;
 
   const PessoasState({
     this.isLoading = false,
     this.error,
-    this.pessoas = const [],
+    this.response,
   });
 
   PessoasState copyWith({
     bool? isLoading,
     String? error,
-    List<Pessoa>? pessoas,
+    ResponsePessoas? response,
   }) {
     return PessoasState(
       isLoading: isLoading ?? this.isLoading,
       error: error,
-      pessoas: pessoas ?? this.pessoas,
+      response: response ?? this.response,
     );
   }
 
   @override
-  List<Object?> get props => [isLoading, error, pessoas];
+  List<Object?> get props => [isLoading, error, response];
 }

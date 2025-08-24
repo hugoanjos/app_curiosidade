@@ -16,8 +16,13 @@ class PessoasBloc extends Bloc<PessoasEvent, PessoasState> {
     emit(state.copyWith(isLoading: true, error: null));
     try {
       final token = sl<AuthCubit>().state.token ?? '';
-      final pessoas = await buscarPessoasUsecase.execute(event.busca, token);
-      emit(state.copyWith(isLoading: false, pessoas: pessoas));
+      final response = await buscarPessoasUsecase.execute(event.busca, token);
+      if (response.statusCode == 200) {
+        emit(state.copyWith(isLoading: false, response: response));
+      } else {
+        emit(state.copyWith(
+            isLoading: false, response: response, error: response.message));
+      }
     } catch (e) {
       emit(state.copyWith(isLoading: false, error: e.toString()));
     }
