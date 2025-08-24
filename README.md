@@ -5,11 +5,6 @@ A aplicação conta com telas de login e cadastro, dashboard, listagem e cadastr
 
 Foram utilizados as dependências:
 
-  flutter_bloc: ^9.1.1
-  dio: ^5.9.0
-  get_it: ^8.2.0
-  equatable: ^2.0.7
-
 - `flutter_bloc` - Para gerência de estado
 - `dio` - Para as requisições de rede (chamadas de API)
 - `get_it` - Para injeção de dependências
