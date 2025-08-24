@@ -111,9 +111,6 @@ class _PessoasPageState extends State<PessoasPage> {
                             if (mounted) {
                               SchedulerBinding.instance
                                   .addPostFrameCallback((_) {
-                                successSnackBar(
-                                    'Cadastro atualizado com sucesso!',
-                                    context);
                                 _pessoasBloc.add(const BuscarPessoasEvent(''));
                               });
                             }
@@ -140,7 +137,6 @@ class _PessoasPageState extends State<PessoasPage> {
             );
             if (result == true) {
               SchedulerBinding.instance.addPostFrameCallback((_) {
-                successSnackBar('Cadastro realizado com sucesso!', context);
                 _pessoasBloc.add(const BuscarPessoasEvent(''));
               });
             }

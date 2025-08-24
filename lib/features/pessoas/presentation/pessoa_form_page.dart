@@ -1,3 +1,4 @@
+import 'package:app_curiosidade/shared/components/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:app_curiosidade/features/pessoas/domain/entities/pessoa.dart';
 import 'package:flutter/scheduler.dart';
@@ -98,6 +99,11 @@ class _PessoaFormPageState extends State<PessoaFormPage> {
           SchedulerBinding.instance.addPostFrameCallback((_) {
             if (Navigator.of(context).canPop()) {
               Navigator.of(context).pop(true);
+              successSnackBar(
+                  (widget.pessoa != null)
+                      ? 'Cadastro atualizado com sucesso!'
+                      : 'Cadastro realizado com sucesso!',
+                  context);
             }
           });
         } else if (state.error != null && state.error!.isNotEmpty) {
