@@ -8,3 +8,5 @@ abstract class DashboardEvent extends Equatable {
 class LoadDashboard extends DashboardEvent {}
 
 class RefreshDashboard extends DashboardEvent {}
+
+class LoadRecentes extends DashboardEvent {}

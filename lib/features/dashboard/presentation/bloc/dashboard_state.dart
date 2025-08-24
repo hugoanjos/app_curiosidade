@@ -6,6 +6,7 @@ class DashboardState extends Equatable {
   final int cadastrosPendentes;
   final bool isLoading;
   final String? error;
+  final List<dynamic> recentes;
 
   const DashboardState({
     this.totalCadastros = 0,
@@ -13,6 +14,7 @@ class DashboardState extends Equatable {
     this.cadastrosPendentes = 0,
     this.isLoading = false,
     this.error,
+    this.recentes = const [],
   });
 
   DashboardState copyWith({
@@ -21,6 +23,7 @@ class DashboardState extends Equatable {
     int? cadastrosPendentes,
     bool? isLoading,
     String? error,
+    List<dynamic>? recentes,
   }) {
     return DashboardState(
       totalCadastros: totalCadastros ?? this.totalCadastros,
@@ -28,6 +31,7 @@ class DashboardState extends Equatable {
       cadastrosPendentes: cadastrosPendentes ?? this.cadastrosPendentes,
       isLoading: isLoading ?? this.isLoading,
       error: error,
+      recentes: recentes ?? this.recentes,
     );
   }
 
@@ -37,6 +41,7 @@ class DashboardState extends Equatable {
         cadastrosUltimoMes,
         cadastrosPendentes,
         isLoading,
-        error
+        error,
+        recentes,
       ];
 }

@@ -21,4 +21,22 @@ class DashboardRepository {
       throw Exception(errorMsg);
     }
   }
+
+  Future<List<dynamic>> fetchRecentes(String token) async {
+    try {
+      final response = await dio.get(
+        '/pessoa/recentes',
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+      return response.data as List<dynamic>;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        throw Exception('unauthorized');
+      }
+      final errorMsg = e.response?.data['error'] ?? 'Erro ao buscar recentes';
+      throw Exception(errorMsg);
+    }
+  }
 }
