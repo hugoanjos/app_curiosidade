@@ -31,21 +31,31 @@ class CadastroPageState extends State<CadastroPage> {
     context.read<CadastroBloc>().add(CadastrarUsuario(nome, email, senha));
   }
 
+  void _onFormChanged(BuildContext context) {
+    context.read<CadastroBloc>().add(
+          CadastroFormChanged(
+            nomeController.text,
+            emailController.text,
+            senhaController.text,
+          ),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => CadastroBloc(),
-      child: BlocListener<CadastroBloc, CadastroState>(
+      child: BlocConsumer<CadastroBloc, CadastroState>(
         listener: (context, state) {
-          if (state is CadastroError) {
-            errorSnackBar(state.message, context);
+          if (state.error != null) {
+            errorSnackBar(state.error!, context);
           }
-          if (state is CadastroSuccess) {
+          if (state.isSuccess) {
             successSnackBar('Usuário criado!', context);
             Navigator.of(context).pop();
           }
         },
-        child: Scaffold(
+        builder: (context, state) => Scaffold(
           appBar: AppBar(
             title: const Text('Cadastro'),
             leading: IconButton(
@@ -70,35 +80,33 @@ class CadastroPageState extends State<CadastroPage> {
                         TextField(
                           controller: nomeController,
                           decoration: const InputDecoration(labelText: 'Nome'),
+                          onChanged: (_) => _onFormChanged(context),
                         ),
                         const SizedBox(height: 12),
                         TextField(
                           controller: emailController,
                           decoration: const InputDecoration(labelText: 'Email'),
+                          onChanged: (_) => _onFormChanged(context),
                         ),
                         const SizedBox(height: 12),
                         TextField(
                           controller: senhaController,
                           decoration: const InputDecoration(labelText: 'Senha'),
                           obscureText: true,
+                          onChanged: (_) => _onFormChanged(context),
                         ),
                         const SizedBox(height: 24),
-                        BlocBuilder<CadastroBloc, CadastroState>(
-                          builder: (context, state) {
-                            return SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: state is CadastroLoading
-                                    ? null
-                                    : () => _cadastrar(context),
-                                child: state is CadastroLoading
-                                    ? const CircularProgressIndicator(
-                                        color: Colors.white,
-                                      )
-                                    : const Text('Cadastrar'),
-                              ),
-                            );
-                          },
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: state.isLoading || !state.isFormValid
+                                ? null
+                                : () => _cadastrar(context),
+                            child: state.isLoading
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white)
+                                : const Text('Cadastrar'),
+                          ),
                         ),
                       ],
                     ),

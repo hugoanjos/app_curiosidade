@@ -15,3 +15,13 @@ class CadastrarUsuario extends CadastroEvent {
   @override
   List<Object?> get props => [nome, email, senha];
 }
+
+class CadastroFormChanged extends CadastroEvent {
+  final String nome;
+  final String email;
+  final String senha;
+  CadastroFormChanged(this.nome, this.email, this.senha);
+
+  @override
+  List<Object?> get props => [nome, email, senha];
+}

@@ -1,8 +1,8 @@
 import '../entities/usuario.dart';
-import '../../data/cadastro_repository.dart';
+import '../../data/login_repository.dart';
 
 class CadastrarUsuarioUsecase {
-  final CadastroRepository repository;
+  final LoginRepository repository;
   CadastrarUsuarioUsecase(this.repository);
 
   Future<String?> execute(Usuario usuario) async {

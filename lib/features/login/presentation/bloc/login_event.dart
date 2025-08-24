@@ -14,3 +14,9 @@ class LoginRequested extends LoginEvent {
   @override
   List<Object?> get props => [email, password];
 }
+
+class LoginFormChanged extends LoginEvent {
+  final String email;
+  final String senha;
+  LoginFormChanged(this.email, this.senha);
+}
