@@ -1,3 +1,4 @@
+import 'package:app_curiosidade/core/auth/auth_cubit.dart';
 import 'package:app_curiosidade/features/login/presentation/bloc/login_bloc.dart';
 import 'package:app_curiosidade/features/login/presentation/bloc/login_event.dart';
 import 'package:app_curiosidade/features/login/presentation/bloc/login_state.dart';
@@ -84,6 +85,9 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: const InputDecoration(labelText: 'Senha'),
                 obscureText: true,
                 onChanged: (_) => _onFormChanged(context),
+                onSubmitted: state.isLoading || !state.isFormValid
+                    ? null
+                    : (_) => _fazerLogin(context),
               ),
               const SizedBox(height: 24),
               SizedBox(
@@ -122,14 +126,14 @@ class _LoginPageState extends State<LoginPage> {
           if (state.error != null) {
             errorSnackBar(state.error!, context);
           }
-          if (state.isSuccess) {
+          if (state.isSuccess && state.token != null) {
+            context.read<AuthCubit>().setToken(state.token!);
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const HomePage()),
             );
           }
         },
         builder: (context, state) => Scaffold(
-          appBar: AppBar(title: const Text('Login')),
           body: Center(
             child: SingleChildScrollView(
               child: Column(

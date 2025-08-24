@@ -1,10 +1,18 @@
 import 'package:app_curiosidade/core/di.dart';
 import 'package:app_curiosidade/features/splash/presentation/splash_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'core/auth/auth_cubit.dart';
 
 void main() {
   setupInjector();
-  runApp(const MainApp());
+  runApp(
+    BlocProvider(
+      create: (_) => AuthCubit(),
+      child: const MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {

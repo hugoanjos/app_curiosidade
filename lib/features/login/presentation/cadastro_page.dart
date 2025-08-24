@@ -94,6 +94,9 @@ class CadastroPageState extends State<CadastroPage> {
                           decoration: const InputDecoration(labelText: 'Senha'),
                           obscureText: true,
                           onChanged: (_) => _onFormChanged(context),
+                          onSubmitted: state.isLoading || !state.isFormValid
+                              ? null
+                              : (_) => _cadastrar(context),
                         ),
                         const SizedBox(height: 24),
                         SizedBox(
