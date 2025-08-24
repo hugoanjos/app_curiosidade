@@ -41,10 +41,13 @@ class LoginRepository {
           'nome': response.data['nome'],
         };
       } else {
-        throw Exception(response.data['error'] ?? 'Erro desconhecido');
+        return {'error': response.data['error'] ?? 'Erro desconhecido'};
       }
+    } on DioException catch (e) {
+      final errorMsg = e.response?.data['error'] ?? 'Erro desconhecido';
+      return {'error': errorMsg};
     } catch (e) {
-      throw Exception(e.toString());
+      return {'error': 'Erro de conexão'};
     }
   }
 }

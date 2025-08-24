@@ -17,30 +17,27 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     on<LoginRequested>((event, emit) async {
       emit(state.copyWith(isLoading: true, error: null));
-      try {
-        final result =
-            await loginUsuarioUsecase.execute(event.email, event.password);
-        if (result != null &&
-            result['token'] != null &&
-            result['id'] != null &&
-            result['nome'] != null) {
-          emit(state.copyWith(
-            isLoading: false,
-            isSuccess: true,
-            token: result['token'] as String?,
-            id: result['id'] is int
-                ? result['id'] as int
-                : int.tryParse(result['id'].toString()),
-            nome: result['nome'] as String?,
-          ));
-        } else {
-          emit(state.copyWith(
-              isLoading: false, error: 'Dados de login não recebidos'));
-        }
-      } catch (e) {
+      final result =
+          await loginUsuarioUsecase.execute(event.email, event.password);
+      if (result != null && result['error'] != null) {
+        emit(
+            state.copyWith(isLoading: false, error: result['error'] as String));
+      } else if (result != null &&
+          result['token'] != null &&
+          result['id'] != null &&
+          result['nome'] != null) {
         emit(state.copyWith(
-            isLoading: false,
-            error: e.toString().replaceAll('Exception: ', '')));
+          isLoading: false,
+          isSuccess: true,
+          token: result['token'] as String?,
+          id: result['id'] is int
+              ? result['id'] as int
+              : int.tryParse(result['id'].toString()),
+          nome: result['nome'] as String?,
+        ));
+      } else {
+        emit(state.copyWith(
+            isLoading: false, error: 'Dados de login não recebidos'));
       }
     });
   }
